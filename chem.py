@@ -228,8 +228,11 @@ def draw_molecule(mol, highlight_atoms=None, highlight_colors=None,
     opts.addStereoAnnotation = True
     opts.addAtomIndices = show_atom_idx
     opts.bondLineWidth = 2.0
-    opts.atomLabelFontSize = 0.55
+    opts.addStereoAnnotation = True
+    opts.addAtomIndices = show_atom_idx
+    opts.bondLineWidth = 2.0
     opts.padding = 0.08
+
     # White background
     drawer.SetBackgroundColour((1, 1, 1, 1))
 
