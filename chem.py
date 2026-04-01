@@ -8,6 +8,20 @@ from io import BytesIO
 from PIL import Image
 import pandas as pd
 
+import sys
+import streamlit as st
+
+st.write("Python path:", sys.executable)
+
+try:
+    from rdkit import Chem
+    st.write("RDKit imported successfully ✅")
+    test = Chem.MolFromSmiles("CCO")
+    st.write("Test molecule:", test)
+except Exception as e:
+    st.error(f"RDKit failed ❌: {e}")
+    
+
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Bleomycin · Stereochemistry Explorer",
