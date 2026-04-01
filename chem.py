@@ -20,7 +20,7 @@ try:
     st.write("Test molecule:", test)
 except Exception as e:
     st.error(f"RDKit failed ❌: {e}")
-    
+
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -191,18 +191,32 @@ FALLBACK_SMILES = (
 
 @st.cache_data
 def load_molecule():
-    mol = Chem.MolFromSmiles(BLEOMYCIN_SMILES)
+    mol = Chem.MolFromSmiles(BLEOMYCIN_SMILES, sanitize=False)
+
     if mol is None:
-        return None
-    Chem.AssignStereochemistry(mol, cleanIt=True, force=True)
+        st.warning("⚠️ Using fallback molecule (Bleomycin too complex for strict parsing)")
+        mol = Chem.MolFromSmiles(FALLBACK_SMILES)
+    else:
+        try:
+            Chem.SanitizeMol(mol)
+        except Exception as e:
+            st.warning(f"Sanitization warning: {e}")
+
     AllChem.Compute2DCoords(mol)
-    return mol
+    return mol  
 
 @st.cache_data
 def get_chiral_centers(mol_smiles):
-    mol = Chem.MolFromSmiles(mol_smiles)
+    mol = Chem.MolFromSmiles(mol_smiles, sanitize=False)
+
     if mol is None:
         return []
+
+    try:
+        Chem.SanitizeMol(mol)
+    except:
+        pass
+
     Chem.AssignStereochemistry(mol, cleanIt=True, force=True)
     centers = Chem.FindMolChiralCenters(mol, includeUnassigned=True)
     return centers
